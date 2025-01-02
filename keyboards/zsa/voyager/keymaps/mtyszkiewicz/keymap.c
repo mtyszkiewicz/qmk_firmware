@@ -5,11 +5,14 @@ const uint16_t PROGMEM sf_combo[] = {KC_S, KC_F, COMBO_END};
 const uint16_t PROGMEM df_combo[] = {KC_D, KC_F, COMBO_END};
 const uint16_t PROGMEM sd_combo[] = {KC_S, KC_D, COMBO_END};
 const uint16_t PROGMEM sdf_combo[] = {KC_S, KC_D, KC_F, COMBO_END};
-const uint16_t PROGMEM jscln_combo[] = {KC_SCLN, KC_J, COMBO_END};
+const uint16_t PROGMEM adf_combo[] = {KC_A, KC_D, KC_F, COMBO_END};
+
+const uint16_t PROGMEM jenter_combo[] = {KC_ENTER, KC_J, COMBO_END};
 const uint16_t PROGMEM jl_combo[] = {KC_L, KC_J, COMBO_END};
 const uint16_t PROGMEM jk_combo[] = {KC_K, KC_J, COMBO_END};
 const uint16_t PROGMEM kl_combo[] = {KC_L, KC_K, COMBO_END};
 const uint16_t PROGMEM jkl_combo[] = {KC_J, KC_K, KC_L, COMBO_END};
+const uint16_t PROGMEM jkenter_combo[] = {KC_J, KC_K, KC_ENTER, COMBO_END};
 
 combo_t key_combos[] = {
     COMBO(af_combo, KC_LALT),
@@ -17,12 +20,51 @@ combo_t key_combos[] = {
     COMBO(df_combo, KC_LSFT),
     COMBO(sd_combo, KC_LGUI),
     COMBO(sdf_combo, LSFT(KC_LGUI)),
-    COMBO(jscln_combo, KC_RALT),
+    COMBO(adf_combo, LGUI(KC_LALT)),
+    COMBO(jenter_combo, KC_RALT),
     COMBO(jl_combo, KC_RCTL),
     COMBO(jk_combo, KC_RSFT),
     COMBO(kl_combo, KC_RGUI),
     COMBO(jkl_combo, RSFT(KC_RGUI)),
+    COMBO(jkenter_combo, RGUI(KC_RALT)),
 };
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    // vim-like firefox navigation
+    if ((get_mods() & MOD_MASK_GUI) && (get_mods() & MOD_MASK_ALT)) {
+        switch (keycode) {
+            case KC_H:
+                if (record->event.pressed) {
+                    register_code16(KC_LEFT);
+                } else {
+                    unregister_code16(KC_LEFT);
+                }
+                return false;
+            case KC_L:
+                if (record->event.pressed) {
+                    register_code16(KC_RIGHT);
+                } else {
+                    unregister_code16(KC_RIGHT);
+                }
+                return false;
+            case KC_J:
+                if (record->event.pressed) {
+                    register_code16(KC_MS_WH_UP);
+                } else {
+                    unregister_code16(KC_MS_WH_UP);
+                }
+                return false;
+            case KC_K:
+                if (record->event.pressed) {
+                    register_code16(KC_MS_WH_DOWN);
+                } else {
+                    unregister_code16(KC_MS_WH_DOWN);
+                }
+                return false;
+        }
+    }
+    return true;
+}
 
 // CW_TOGG - Caps Word
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
