@@ -16,6 +16,7 @@ const uint16_t PROGMEM combo_right_command_shift[] = {KC_J, KC_K, KC_L, COMBO_EN
 const uint16_t PROGMEM combo_right_command_option[] = {KC_J, KC_K, KC_ENTER, COMBO_END};
 const uint16_t PROGMEM combo_right_tmux_prefix[] = {KC_J, KC_SPACE, COMBO_END};
 
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [0] = LAYOUT(
         KC_CAPS,  _______,  _______,  _______,  _______,  _______,      _______,  _______,  _______,  _______,  _______,  TO(2),
@@ -44,39 +45,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     )
 };
 
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    // vim-like firefox navigation
-    if ((get_mods() & MOD_MASK_GUI) && (get_mods() & MOD_MASK_ALT)) {
-        switch (keycode) {
-            case KC_H:
-                if (record->event.pressed) {
-                    register_code16(KC_LEFT);
-                } else {
-                    unregister_code16(KC_LEFT);
-                }
-                return false;
-            case KC_L:
-                if (record->event.pressed) {
-                    register_code16(KC_RIGHT);
-                } else {
-                    unregister_code16(KC_RIGHT);
-                }
-                return false;
-            case KC_J:
-                if (record->event.pressed) {
-                    register_code16(QK_MOUSE_WHEEL_UP);
-                } else {
-                    unregister_code16(QK_MOUSE_WHEEL_UP);
-                }
-                return false;
-            case KC_K:
-                if (record->event.pressed) {
-                    register_code16(QK_MOUSE_WHEEL_DOWN);
-                } else {
-                    unregister_code16(QK_MOUSE_WHEEL_DOWN);
-                }
-                return false;
-        }
+bool combo_should_trigger(uint16_t combo_index, combo_t *combo, uint16_t keycode, keyrecord_t *record) {
+    // Disable all combos on layer 2 (gaming layer)
+    if (get_highest_layer(layer_state) == 2) {
+        return false;
     }
     return true;
 }
